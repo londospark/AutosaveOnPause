@@ -1,0 +1,8 @@
+
+.fake
+.ionide
+
+Src/AutosaveOnPause/bin
+Src/AutosaveOnPause/obj
+
+Build
