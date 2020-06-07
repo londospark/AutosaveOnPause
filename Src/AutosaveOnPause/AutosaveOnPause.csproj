@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
+    <VersionSuffix>pre$([System.DateTime]::UtcNow.ToString(yyyyMMdd-HHmmss))</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>
