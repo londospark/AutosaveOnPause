@@ -30,6 +30,8 @@ Target.create "Build" (fun _ ->
 Target.create "Install" (fun _ -> 
     Shell.mkdir (installFolder)
     Shell.copyFile installFolder (buildDir + "AutosaveOnPause.dll")
+    Shell.copyFile installFolder (buildDir + "AutosaveOnPause.pdb")
+    Shell.copyFile installFolder (buildDir + "CitiesHarmony.API.dll")
 )
 
 open Fake.Core.TargetOperators

@@ -2,7 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <VersionSuffix>pre$([System.DateTime]::UtcNow.ToString(yyyyMMdd-HHmmss))</VersionSuffix>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <Deterministic>False</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,5 +25,7 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <PackageReference Include="CitiesHarmony.API" Version="1.0.5" />
+    <PackageReference Include="Lib.Harmony" Version="2.0.1" />
   </ItemGroup>
 </Project>
