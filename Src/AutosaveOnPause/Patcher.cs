@@ -10,9 +10,6 @@ namespace AutosaveOnPause
     {
         private const string HarmonyId = "com.garethhubball.AutosaveOnPause";
         private static bool patched = false;
-
-        public static string SaveName {get; set;} = Constants.DefaultFileName; 
-
         public static void PatchAll()
         {
             if (patched) return;
@@ -37,7 +34,8 @@ namespace AutosaveOnPause
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-                savePanel.AutoSave(SaveName);
+                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName;
+                savePanel.AutoSave(saveName);
             }
             //var panel = UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel");
             //panel.SetMessage("Autosave!", $"Paused is now {value}", false);

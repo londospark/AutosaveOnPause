@@ -1,17 +1,11 @@
 ﻿using System.Reflection;
 using CitiesHarmony.API;
-using HarmonyLib;
 using ICities;
 
 [assembly: AssemblyVersion("1.0.*")]
 
 namespace AutosaveOnPause
 {
-
-    public static class Constants
-    {
-        public const string DefaultFileName = "AutoSavedOnPause";
-    }
     public class Mod : LoadingExtensionBase, IUserMod
     {
         public string Name => "Autosave on Pause";
@@ -19,13 +13,11 @@ namespace AutosaveOnPause
 
         public void OnEnabled()
         {
-            Harmony.DEBUG = true;
             HarmonyHelper.EnsureHarmonyInstalled();
         }
 
         public override void OnCreated(ILoading loading)
         {
-            FileLog.Log("AutoSavedOnPause Loading");
             if (HarmonyHelper.IsHarmonyInstalled) Patcher.PatchAll();
         }
 
@@ -36,8 +28,12 @@ namespace AutosaveOnPause
 
         public void OnSettingsUI(UIHelperBase helper)
         {
+            var config = Configuration<AutosaveOnPauseConfiguration>.Load();
             var group = helper.AddGroup("Save options:");
-            group.AddTextfield("Save name", Constants.DefaultFileName, value => Patcher.SaveName = value);
+            group.AddTextfield("Save name", config.SaveName, value => {
+                config.SaveName = value;
+                Configuration<AutosaveOnPauseConfiguration>.Save();
+            });
         }
     }
 }
