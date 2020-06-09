@@ -4,6 +4,7 @@ storage: packages
 
 nuget Fake.IO.FileSystem
 nuget Fake.Core.Target
+nuget Fake.DotNet.Cli
 nuget Fake.DotNet.MSBuild
 nuget Fake.DotNet.Testing.NUnit
 nuget NUnit.ConsoleRunner //"
@@ -25,6 +26,12 @@ let nunitRunnerPath = "./.fake/build.fsx/packages/NUnit.ConsoleRunner/tools/nuni
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
+)
+
+Target.create "Restore" (fun _ ->
+  let projects = !! "./Src/**/*.csproj"
+  for project in projects do
+    DotNet.restore (fun _ -> DotNet.RestoreOptions.Create()) (project)
 )
 
 Target.create "Build" (fun _ -> 
