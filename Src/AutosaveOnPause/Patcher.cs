@@ -31,7 +31,14 @@ namespace AutosaveOnPause
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-                var cityInformation = new CityInformation { Name = SimulationManager.instance.m_metaData.m_CityName };
+
+                var metaData = SimulationManager.instance.m_metaData;
+                var cityInformation = new CityInformation
+                {
+                    Name = metaData.m_CityName,
+                    CurrentDate = metaData.m_currentDateTime
+                };
+
                 var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.FillTemplate(cityInformation);
                 savePanel.AutoSave(saveName);
             }
