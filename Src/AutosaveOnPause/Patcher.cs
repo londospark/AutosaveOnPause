@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Cities.DemoMode;
+using ColossalFramework;
 using ColossalFramework.UI;
 using HarmonyLib;
 
@@ -30,7 +31,8 @@ namespace AutosaveOnPause
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.Parse(new CityInformation());
+                var cityInformation = new CityInformation { Name = SimulationManager.instance.m_metaData.m_CityName };
+                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.FillTemplate(cityInformation);
                 savePanel.AutoSave(saveName);
             }
         }

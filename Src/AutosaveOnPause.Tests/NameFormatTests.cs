@@ -12,7 +12,7 @@ namespace AutosaveOnPause.Tests
             var cityInformation = new CityInformation { Name = "CityName"};
             var expected = "AutosaveName";
 
-            Assert.That(template.Parse(cityInformation), Is.EqualTo(expected));
+            Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));
         }
 
         [Test]
@@ -22,7 +22,7 @@ namespace AutosaveOnPause.Tests
             var cityInformation = new CityInformation { Name = "Lakevalley"};
             var expected = "Lakevalley";
 
-            Assert.That(template.Parse(cityInformation), Is.EqualTo(expected));
+            Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));
         }
 
         
@@ -34,7 +34,7 @@ namespace AutosaveOnPause.Tests
             var cityInformation = new CityInformation { Name = "Lakevalley"};
             var expected = "Autosave: Lakevalley";
 
-            Assert.That(template.Parse(cityInformation), Is.EqualTo(expected));
+            Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));
         }
     }
 }
