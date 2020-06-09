@@ -2,7 +2,8 @@
 .fake
 .ionide
 
-Src/AutosaveOnPause/bin
-Src/AutosaveOnPause/obj
+Src/**/bin
+Src/**/obj
 
 Build
+TestResult.xml
