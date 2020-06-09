@@ -18,10 +18,6 @@ namespace AutosaveOnPause
             var harmony = new Harmony(HarmonyId);
             var mOriginal = AccessTools.PropertySetter(typeof(SimulationManager), "SimulationPaused");
             var mPostfix = AccessTools.Method(typeof(Patcher), nameof(Autosave));
-
-            //            FileLog.Log($"ASOP Original: {mOriginal.FullDescription()}");
-            //            FileLog.Log($"ASOP Patched: {mPostfix.FullDescription()}");
-
             harmony.Patch(mOriginal, postfix: new HarmonyMethod(mPostfix));
         }
 
@@ -34,11 +30,9 @@ namespace AutosaveOnPause
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName;
+                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.Parse(new CityInformation());
                 savePanel.AutoSave(saveName);
             }
-            //var panel = UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel");
-            //panel.SetMessage("Autosave!", $"Paused is now {value}", false);
         }
 
         public static void UnpatchAll()
