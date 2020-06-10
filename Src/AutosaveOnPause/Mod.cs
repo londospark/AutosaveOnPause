@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using CitiesHarmony.API;
+using ColossalFramework.UI;
 using ICities;
 
 [assembly: AssemblyVersion("1.0.*")]
@@ -34,8 +35,10 @@ namespace AutosaveOnPause
             group.AddTextfield("Save name", config.SaveName, value => config.SaveName = value);
 
             group.AddCheckbox("Limit Autosave Frequency", false, enabled => config.LimitAutosaves = enabled);
-            group.AddSlider("Minimum Time Between Autosaves", 1, 60, 1, 10, value => config.AutosaveInterval = Math.Round(value));
+            var slider = group.AddSlider("Minimum Time Between Autosaves", 1, 60, 1, 10, value => config.AutosaveInterval = Math.Round(value)) as UISlider;
             group.AddButton("Save", () => Configuration<AutosaveOnPauseConfiguration>.Save());
+
+            slider.enabled = config.LimitAutosaves;
         }
     }
 }
