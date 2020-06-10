@@ -9,7 +9,7 @@ namespace AutosaveOnPause
 
         public bool EligibleToSave(AutosaveOnPauseConfiguration config)
         {
-            if (config.LimitAutosaves == false) return true;
+            if (!config.LimitAutosaves) return true;
 
             if (DateTime.Now.AddMinutes(-1 * config.AutosaveInterval) > LastSave)
             {
