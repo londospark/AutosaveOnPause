@@ -22,14 +22,13 @@ namespace AutosaveOnPause
 
         static void Autosave(int value)
         {
-            if (value != 0)
+            if (value != 0 && ASOPTimer.instance.EligibleToSave())
             {
                 if ((Object)DemoModeLoader.instance != (Object)null)
                     return;
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-
                 var metaData = SimulationManager.instance.m_metaData;
                 var cityInformation = new CityInformation
                 {
