@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using CitiesHarmony.API;
 using ICities;
 
@@ -30,10 +31,11 @@ namespace AutosaveOnPause
         {
             var config = Configuration<AutosaveOnPauseConfiguration>.Load();
             var group = helper.AddGroup("Save options:");
-            group.AddTextfield("Save name", config.SaveName, value => {
-                config.SaveName = value;
-                Configuration<AutosaveOnPauseConfiguration>.Save();
-            });
+            group.AddTextfield("Save name", config.SaveName, value => config.SaveName = value);
+
+            group.AddCheckbox("Limit Autosave Frequency", false, enabled => config.LimitAutosaves = enabled);
+            group.AddSlider("Minimum Time Between Autosaves", 1, 60, 1, 10, value => config.AutosaveInterval = Math.Round(value));
+            group.AddButton("Save", () => Configuration<AutosaveOnPauseConfiguration>.Save());
         }
     }
 }

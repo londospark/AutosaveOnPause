@@ -22,7 +22,8 @@ namespace AutosaveOnPause
 
         static void Autosave(int value)
         {
-            if (value != 0 && ASOPTimer.instance.EligibleToSave())
+            var config = Configuration<AutosaveOnPauseConfiguration>.Load();
+            if (value != 0 && ASOPTimer.instance.EligibleToSave(config))
             {
                 if ((Object)DemoModeLoader.instance != (Object)null)
                     return;
@@ -36,7 +37,7 @@ namespace AutosaveOnPause
                     CurrentDate = metaData.m_currentDateTime
                 };
 
-                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.FillTemplate(cityInformation);
+                var saveName = config.SaveName.FillTemplate(cityInformation);
                 savePanel.AutoSave(saveName);
             }
         }
