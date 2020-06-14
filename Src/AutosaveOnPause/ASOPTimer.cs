@@ -3,11 +3,11 @@ using ColossalFramework;
 
 namespace AutosaveOnPause
 {
-    public class ASOPTimer : Singleton<ASOPTimer>
+    public static class ASOPTimer
     {
-        public DateTime LastSave { get; set; } = DateTime.MinValue;
+        public static DateTime LastSave { get; set; } = DateTime.MinValue;
 
-        public bool EligibleToSave(AutosaveOnPauseConfiguration config)
+        public static bool EligibleToSave(AutosaveOnPauseConfiguration config)
         {
             if (!config.LimitAutosaves) return true;
 

@@ -23,7 +23,7 @@ namespace AutosaveOnPause
         static void Autosave(int value)
         {
             var config = Configuration<AutosaveOnPauseConfiguration>.Load();
-            if (value != 0 && ASOPTimer.instance.EligibleToSave(config))
+            if (value != 0 && ASOPTimer.EligibleToSave(config))
             {
                 if ((Object)DemoModeLoader.instance != (Object)null)
                     return;
