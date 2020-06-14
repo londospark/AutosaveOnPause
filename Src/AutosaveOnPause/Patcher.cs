@@ -22,14 +22,14 @@ namespace AutosaveOnPause
 
         static void Autosave(int value)
         {
-            if (value != 0)
+            var config = Configuration<AutosaveOnPauseConfiguration>.Load();
+            if (value != 0 && ASOPTimer.EligibleToSave(config))
             {
                 if ((Object)DemoModeLoader.instance != (Object)null)
                     return;
                 SavePanel savePanel = UIView.library.Get<SavePanel>("SavePanel");
                 if (!((Object)savePanel != (Object)null))
                     return;
-
                 var metaData = SimulationManager.instance.m_metaData;
                 var cityInformation = new CityInformation
                 {
@@ -37,7 +37,7 @@ namespace AutosaveOnPause
                     CurrentDate = metaData.m_currentDateTime
                 };
 
-                var saveName = Configuration<AutosaveOnPauseConfiguration>.Load().SaveName.FillTemplate(cityInformation);
+                var saveName = config.SaveName.FillTemplate(cityInformation);
                 savePanel.AutoSave(saveName);
             }
         }
