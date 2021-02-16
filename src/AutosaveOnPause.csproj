@@ -9,27 +9,33 @@
     <Deterministic>False</Deterministic>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <CitiesManagedPath Condition=" '$(OS)' != 'Windows_NT' ">$(Home)/.local/share/Steam/steamapps/common/Cities_Skylines/Cities_Data/Managed/</CitiesManagedPath>
+    <CitiesManagedPath Condition=" '$(OS)' == 'Windows_NT' ">C:\Program Files (x86)\Steam\SteamApps\common\Cities_Skylines\Cities_Data\Managed\</CitiesManagedPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="ICities">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+      <HintPath>$(CitiesManagedPath)ICities.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(CitiesManagedPath)UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>$(CitiesManagedPath)UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+      <HintPath>$(CitiesManagedPath)ColossalManaged.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(CitiesManagedPath)Assembly-CSharp.dll</HintPath>
     </Reference>
+
     <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    
     <PackageReference Include="CitiesHarmony.API" Version="2.0.0" />
-    <PackageReference Include="Lib.Harmony" Version="2.0.4" />
   </ItemGroup>
 </Project>

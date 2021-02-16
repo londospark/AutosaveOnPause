@@ -2,12 +2,11 @@
 #r "paket:
 storage: packages
 
+nuget FSharp.Core 4.7.0.0
 nuget Fake.IO.FileSystem
 nuget Fake.Core.Target
 nuget Fake.DotNet.Cli
-nuget Fake.DotNet.MSBuild
-nuget Fake.DotNet.Testing.NUnit
-nuget NUnit.ConsoleRunner //"
+nuget Fake.DotNet.MSBuild //"
 
 #if !FAKE
 #load "./.fake/build.fsx/intellisense.fsx"
@@ -15,53 +14,67 @@ nuget NUnit.ConsoleRunner //"
 
 open Fake.Core
 open Fake.DotNet
-open Fake.DotNet.Testing
 open Fake.IO.Globbing.Operators
 open Fake.IO
 
 let buildDir = "./Build/"
 
-let installFolder = (Environment.environVar "LOCALAPPDATA") + "/Colossal Order/Cities_Skylines/Addons/Mods/AutosaveOnPause"
-let nunitRunnerPath = "./.fake/build.fsx/packages/NUnit.ConsoleRunner/tools/nunit3-console.exe"
+let projects =
+    (!! "./src/*.csproj") :> seq<string> |> List.ofSeq
 
-Target.create "Clean" (fun _ ->
-    Shell.cleanDir buildDir
-)
+let modName =
+    match projects with
+    | [ project ] -> (FileInfo.ofPath project).Name
+    | _ -> failwith "Please have one and only one project in the src directory"
 
-Target.create "Restore" (fun _ ->
-  let projects = !! "./Src/**/*.csproj"
-  for project in projects do
-    DotNet.restore (fun _ -> DotNet.RestoreOptions.Create()) (project)
-)
 
-Target.create "Build" (fun _ -> 
-    !! "./Src/AutosaveOnPause/*.csproj"
-      |> MSBuild.runRelease id buildDir "Build"
-      |> Trace.logItems "AppBuild-Output: "
-)
+let windowsInstallFolder =
+    sprintf
+        "%s/Colossal Order/Cities_Skylines/Addons/Mods/%s"
+        (Environment.environVar "LOCALAPPDATA")
+        (Path.changeExtension "" modName)
 
-Target.create "Test" (fun _ -> 
-    !! "./Src/AutosaveOnPause.Tests/*.csproj"
-      |> MSBuild.runRelease id buildDir "Build"
-      |> Trace.logItems "TestBuild-Output: "
-    !! (buildDir + "*.Tests.dll")
-      |> NUnit3.run (fun p -> { p with ShadowCopy = false; ToolPath = nunitRunnerPath })
-)
 
-Target.create "Install" (fun _ -> 
-    Shell.mkdir (installFolder)
-    Shell.copyFile installFolder (buildDir + "AutosaveOnPause.dll")
-    Shell.copyFile installFolder (buildDir + "AutosaveOnPause.pdb")
-    Shell.copyFile installFolder (buildDir + "CitiesHarmony.API.dll")
-)
+let linuxInstallFolder =
+    sprintf
+        "%s/.local/share/Colossal Order/Cities_Skylines/Addons/Mods/%s"
+        (Environment.environVar "HOME")
+        (System.IO.Path.GetFileNameWithoutExtension(modName))
+
+let installFolder =
+    if Environment.isWindows then
+        windowsInstallFolder
+    else
+        linuxInstallFolder
+
+Target.create "Clean" (fun _ -> Shell.cleanDir buildDir)
+
+Target.create
+    "Restore"
+    (fun _ ->
+        let projects = !! "./src/*.csproj"
+
+        for project in projects do
+            DotNet.restore (fun _ -> DotNet.RestoreOptions.Create()) (project))
+
+Target.create
+    "Build"
+    (fun _ ->
+        DotNet.build (fun x -> { x with OutputPath = (Some "./Build") }) (sprintf "src/%s" modName)
+        |> ignore)
+
+Target.create
+    "Install"
+    (fun _ ->
+        Shell.mkdir (installFolder)
+        Shell.copyFile installFolder (Path.combine buildDir (Path.changeExtension ".dll" modName))
+        Shell.copyFile installFolder (Path.combine buildDir (Path.changeExtension ".pdb" modName))
+        Shell.copyFile installFolder (Path.combine buildDir "CitiesHarmony.API.dll"))
 
 open Fake.Core.TargetOperators
 
 // Dependencies
-"Clean"
-  ==> "Build"
-  ==> "Test"
-  ==> "Install"
+"Restore" ==> "Clean" ==> "Build" ==> "Install"
 
 // start build
 Target.runOrDefault "Install"

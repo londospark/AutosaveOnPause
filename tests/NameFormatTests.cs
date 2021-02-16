@@ -10,7 +10,7 @@ namespace AutosaveOnPause.Tests
         public void ATemplateWithNoPlaceholdersIsUnchanged()
         {
             var template = "AutosaveName";
-            var cityInformation = new CityInformation { Name = "CityName"};
+            var cityInformation = new CityInformation { Name = "CityName" };
             var expected = "AutosaveName";
 
             Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));
@@ -20,7 +20,7 @@ namespace AutosaveOnPause.Tests
         public void ATemplateWithOnlyANamePaceholderIsUpdated()
         {
             var template = "{{CityName}}";
-            var cityInformation = new CityInformation { Name = "Lakevalley"};
+            var cityInformation = new CityInformation { Name = "Lakevalley" };
             var expected = "Lakevalley";
 
             Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));
@@ -30,7 +30,7 @@ namespace AutosaveOnPause.Tests
         public void ATemplateWithANamePaceholderAndTextIsUpdated()
         {
             var template = "Autosave: {{CityName}}";
-            var cityInformation = new CityInformation { Name = "Lakevalley"};
+            var cityInformation = new CityInformation { Name = "Lakevalley" };
             var expected = "Autosave: Lakevalley";
 
             Assert.That(template.FillTemplate(cityInformation), Is.EqualTo(expected));

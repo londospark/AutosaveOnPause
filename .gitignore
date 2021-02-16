@@ -2,8 +2,11 @@
 .fake
 .ionide
 
-Src/**/bin
-Src/**/obj
+src/**/bin
+src/**/obj
+
+tests/**/bin
+tests/**/obj
 
 Build
 TestResult.xml
