@@ -1,27 +1,27 @@
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using UnityEngine;
 
-public abstract class Configuration<C> where C : class, new()
+namespace AutosaveOnPause;
+
+public abstract class Configuration<TConfig> where TConfig : class, new()
 {
-    private static C instance;
+    private static TConfig instance;
         
-    public static C Load()
+    public static TConfig Load()
     {
         if (instance == null)
         {
             var configPath = GetConfigPath();
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(C));
+            var xmlSerializer = new XmlSerializer(typeof(TConfig));
             try
             {
                 if (File.Exists(configPath))
                 {
-                    using (StreamReader streamReader = new System.IO.StreamReader(configPath))
-                    {
-                        instance = xmlSerializer.Deserialize(streamReader) as C;
-                    }
+                    using var streamReader = new StreamReader(configPath);
+                    instance = xmlSerializer.Deserialize(streamReader) as TConfig;
                 }
             }
             catch (Exception e)
@@ -29,24 +29,22 @@ public abstract class Configuration<C> where C : class, new()
                 Debug.LogException(e);
             }
         }
-        return instance ?? (instance = new C());
+        return instance ??= new TConfig();
     }
 
     public static void Save()
     {
-        if (instance == null) return;
+        if (instance is null) return;
 
         var configPath = GetConfigPath();
 
-        var xmlSerializer = new XmlSerializer(typeof(C));
+        var xmlSerializer = new XmlSerializer(typeof(TConfig));
         var noNamespaces = new XmlSerializerNamespaces();
         noNamespaces.Add("", "");
         try
         {
-            using (var streamWriter = new System.IO.StreamWriter(configPath))
-            {
-                xmlSerializer.Serialize(streamWriter, instance, noNamespaces);
-            }
+            using var streamWriter = new StreamWriter(configPath);
+            xmlSerializer.Serialize(streamWriter, instance, noNamespaces);
         }
         catch (Exception e)
         {
@@ -54,30 +52,13 @@ public abstract class Configuration<C> where C : class, new()
         }
     }
 
-    private static string GetConfigPath() 
+    private static string GetConfigPath()
     {
-        var configPathAttribute = typeof(C).GetCustomAttributes(typeof(ConfigurationPathAttribute), true)
-            .FirstOrDefault() as ConfigurationPathAttribute;
-
-        if (configPathAttribute != null)
-        {
-            return configPathAttribute.Value;
-        }
-        else
-        {
-            Debug.LogError("ConfigurationPath attribute missing in " + typeof(C).Name);
-            return typeof(C).Name + ".xml";
-        }
+        return typeof(TConfig).GetCustomAttributes(typeof(ConfigurationPathAttribute), true)
+                .FirstOrDefault() switch
+            {
+                ConfigurationPathAttribute configPathAttribute => configPathAttribute.Value,
+                _ => $"{typeof(TConfig).Name}.xml"
+            };
     }
-}
-
-[AttributeUsage(AttributeTargets.Class)]
-public class ConfigurationPathAttribute : Attribute
-{
-    public ConfigurationPathAttribute(string value)
-    {
-        Value = value;
-    }
-
-    public string Value { get; private set; }
 }
